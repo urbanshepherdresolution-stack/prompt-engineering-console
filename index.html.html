@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prompt Engineering Console</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0d0b10;
+            color: #e4ddd6;
+            display: flex;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+        .app {
+            max-width: 1200px;
+            width: 100%;
+        }
+        header {
+            border-bottom: 1px solid #252129;
+            padding-bottom: 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        h1 {
+            font-weight: 300;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+            color: #d4c4b4;
+        }
+        .header-actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .btn {
+            background: transparent;
+            border: 1px solid #3d3440;
+            color: #cfc2ba;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-weight: 500;
+        }
+        .btn:hover {
+            background: #29222e;
+            border-color: #5e4d5a;
+        }
+        .btn-primary {
+            background: #7a5f6a;
+            border-color: #7a5f6a;
+            color: #0d0b10;
+        }
+        .btn-primary:hover {
+            background: #9a7a88;
+            border-color: #9a7a88;
+        }
+        .btn-success {
+            background: #3a6a3a;
+            border-color: #3a6a3a;
+            color: #d4ecd4;
+        }
+        .btn-success:hover {
+            background: #4a8a4a;
+            border-color: #4a8a4a;
+        }
+        .btn-danger {
+            background: #7a3a3a;
+            border-color: #7a3a3a;
+            color: #ecd4d4;
+        }
+        .btn-danger:hover {
+            background: #8a4a4a;
+            border-color: #8a4a4a;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .card {
+            background: #141117;
+            border: 1px solid #28222d;
+            border-radius: 16px;
+            padding: 1.2rem;
+            transition: border 0.2s;
+        }
+        .card:hover {
+            border-color: #3d3440;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.6rem;
+        }
+        .card-header h3 {
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: #b5a69e;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .card-header .badge {
+            font-size: 0.65rem;
+            background: #1d1822;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            color: #6f5f6a;
+        }
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+        .tag {
+            background: #1c1820;
+            border: 1px solid #2d2730;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            color: #b5a69e;
+            user-select: none;
+        }
+        .tag:hover {
+            background: #29222e;
+            border-color: #5e4d5a;
+        }
+        .tag.active {
+            background: #7a5f6a;
+            border-color: #7a5f6a;
+            color: #0d0b10;
+        }
+        .tag .desc {
+            color: #6f5f6a;
+            font-size: 0.65rem;
+            margin-left: 0.3rem;
+        }
+
+        .console {
+            background: #141117;
+            border: 1px solid #28222d;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .console-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .console-header h2 {
+            font-weight: 300;
+            font-size: 1.2rem;
+            color: #d4c4b4;
+        }
+        .console-header .count {
+            font-size: 0.8rem;
+            color: #6f5f6a;
+        }
+        .console-output {
+            background: #0d0b10;
+            border: 1px solid #1d1822;
+            border-radius: 12px;
+            padding: 1.2rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #cbb6a4;
+            min-height: 120px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .console-actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .footer {
+            margin-top: 2.5rem;
+            font-size: 0.7rem;
+            color: #3f3540;
+            text-align: center;
+            border-top: 1px solid #1c1820;
+            padding-top: 1.2rem;
+        }
+
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .console-output {
+                font-size: 0.75rem;
+                max-height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+
+    <header>
+        <h1>⚡ Prompt Engineering Console</h1>
+        <div class="header-actions">
+            <button class="btn btn-success" id="selectAllBtn">Select All</button>
+            <button class="btn btn-danger" id="deselectAllBtn">Deselect All</button>
+            <button class="btn btn-primary" id="copyBtn">📋 Copy Prompt</button>
+        </div>
+    </header>
+
+    <!-- Mode Grid -->
+    <div class="grid" id="modeGrid">
+        <!-- Categories will be injected here -->
+    </div>
+
+    <!-- Console -->
+    <div class="console">
+        <div class="console-header">
+            <h2>📝 Generated Prompt</h2>
+            <span class="count" id="selectedCount">0 modes selected</span>
+        </div>
+        <div class="console-output" id="consoleOutput">Click modes above to build your prompt.</div>
+        <div class="console-actions">
+            <button class="btn btn-primary" id="generateBtn">🔄 Generate Prompt</button>
+            <button class="btn" id="clearBtn">Clear Selection</button>
+            <button class="btn" id="saveConfigBtn">💾 Save Configuration</button>
+            <button class="btn" id="loadConfigBtn">📂 Load Configuration</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        Built with all modes from the Master List. Select, generate, copy, and use.
+    </div>
+</div>
+
+<script>
+    // ================================================================
+    // 1. DATA — All Modes Organized by Category
+    // ================================================================
+    const categories = [{
+        name: 'Modes',
+        items: [
+            { id: 'truthmode', label: 'Truthmode', desc: 'Radical honesty' },
+            { id: 'eli10', label: 'ELI10', desc: 'Explain like I\'m 10' },
+            { id: 'redteam', label: 'Red Team', desc: 'Attack assumptions' },
+            { id: 'hormozi', label: 'Hormozi', desc: 'Direct and blunt' },
+            { id: 'human', label: '/human', desc: 'Respect your limits' },
+            { id: 'futureyou', label: 'FutureYou', desc: 'Think long-term' },
+            { id: 'unlearn', label: 'Unlearn', desc: 'Challenge assumptions' },
+            { id: '8020', label: '80/20', desc: 'Find the leverage' },
+            { id: 'socrates', label: 'Socrates', desc: 'Ask questions' },
+            { id: 'lindy', label: 'Lindymode', desc: 'Time-tested solutions' },
+            { id: 'zerobs', label: 'Zero BS', desc: 'No fluff' },
+            { id: 'accountability', label: 'Accountability', desc: 'Warn me' }
+        ]
+    }, {
+        name: 'Reasoning Frameworks',
+        items: [
+            { id: 'chainofthought', label: 'Chain of Thought', desc: 'Show reasoning' },
+            { id: 'treeofthoughts', label: 'Tree of Thoughts', desc: 'Explore paths' },
+            { id: 'selfconsistency', label: 'Self-Consistency', desc: 'Find consensus' },
+            { id: 'react', label: 'ReAct', desc: 'Reason + Action' },
+            { id: 'reflection', label: 'Reflection', desc: 'Critique yourself' },
+            { id: 'selfask', label: 'Self-Ask', desc: 'Ask clarifying questions' },
+            { id: 'leasttomost', label: 'Least-to-Most', desc: 'Solve subproblems' },
+            { id: 'stepback', label: 'Step-Back', desc: 'What is the real question?' },
+            { id: 'analogical', label: 'Analogical', desc: 'Find similar problems' }
+        ]
+    }, {
+        name: 'Epistemic Modes',
+        items: [
+            { id: 'bayesian', label: 'Bayesian', desc: 'Update probability' },
+            { id: 'calibration', label: 'Confidence Calibration', desc: 'Express uncertainty' },
+            { id: 'confidenceintervals', label: 'Confidence Intervals', desc: 'Give a range' },
+            { id: 'prior', label: 'Prior', desc: 'What I assumed' },
+            { id: 'posterior', label: 'Posterior', desc: 'What I now believe' },
+            { id: 'falsifiability', label: 'Falsifiability', desc: 'What would prove me wrong' },
+            { id: 'occam', label: 'Occam\'s Razor', desc: 'Simplest explanation' },
+            { id: 'hitchens', label: 'Hitchens\'s Razor', desc: 'Reject claims without evidence' },
+            { id: 'hanlons', label: 'Hanlon\'s Razor', desc: 'Incompetence, not malice' }
+        ]
+    }, {
+        name: 'Problem-Solving',
+        items: [
+            { id: 'firstprinciples', label: 'First Principles', desc: 'Break it down' },
+            { id: 'inversion', label: 'Inversion', desc: 'Work backward from failure' },
+            { id: 'mapoftheterritory', label: 'Map of the Territory', desc: 'Describe the problem' },
+            { id: 'secondorder', label: 'Second-Order Effects', desc: 'Consequences of consequences' },
+            { id: 'chestertonsfence', label: 'Chesterton\'s Fence', desc: 'Why does this exist?' },
+            { id: 'parkinsonslaw', label: 'Parkinson\'s Law', desc: 'Tasks expand to fill time' },
+            { id: 'hofstadterslaw', label: 'Hofstadter\'s Law', desc: 'It takes longer' },
+            { id: 'paretoprinciple', label: 'Pareto Principle', desc: '80/20' },
+            { id: 'premortem', label: 'Pre-mortem', desc: 'Assume it failed' }
+        ]
+    }, {
+        name: 'Cognitive Strategies',
+        items: [
+            { id: 'metacognition', label: 'Metacognition', desc: 'Think about thinking' },
+            { id: 'cognitivedissonance', label: 'Cognitive Dissonance', desc: 'Find contradictions' },
+            { id: 'anchoring', label: 'Anchoring', desc: 'Warn about first numbers' },
+            { id: 'framing', label: 'Framing Effect', desc: 'Show how it looks different' },
+            { id: 'availability', label: 'Availability Heuristic', desc: 'Recent memory bias' },
+            { id: 'confirmationbias', label: 'Confirmation Bias', desc: 'Seeking what confirms' },
+            { id: 'sunkcost', label: 'Sunk Cost Fallacy', desc: 'Don\'t throw good after bad' },
+            { id: 'dunningkruger', label: 'Dunning-Kruger Effect', desc: 'Confidence vs competence' },
+            { id: 'planningfallacy', label: 'Planning Fallacy', desc: 'Underestimating time' }
+        ]
+    }, {
+        name: 'Tactical & Human',
+        items: [
+            { id: 'execution', label: 'Execution', desc: 'Action, not discussion' },
+            { id: 'tactical', label: 'Tactical', desc: 'Specific steps' },
+            { id: 'strategic', label: 'Strategic', desc: 'Big picture' },
+            { id: 'operational', label: 'Operational', desc: 'Execution details' },
+            { id: 'contingency', label: 'Contingency', desc: 'Plan for failure' },
+            { id: 'convergence', label: 'Convergence', desc: 'Move to agreement' },
+            { id: 'divergence', label: 'Divergence', desc: 'Explore options' },
+            { id: 'synthesis', label: 'Synthesis', desc: 'Combine ideas' },
+            { id: 'optimization', label: 'Optimization', desc: 'Improve existing' },
+            { id: 'destruction', label: 'Destruction', desc: 'Tear down and rebuild' }
+        ]
+    }, {
+        name: 'Human Factors',
+        items: [
+            { id: 'humanfactor', label: '/human', desc: 'Respect limits' },
+            { id: 'aiacknowledge', label: '/ai', desc: 'Acknowledge I am AI' },
+            { id: 'biocompatibility', label: 'Biocompatibility', desc: 'Works for humans' },
+            { id: 'sustainability', label: 'Sustainability', desc: 'Maintainable' },
+            { id: 'resilience', label: 'Resilience', desc: 'Works under stress' },
+            { id: 'adaptability', label: 'Adaptability', desc: 'Can change' },
+            { id: 'simplicity', label: 'Simplicity', desc: 'Easy to understand' },
+            { id: 'clarity', label: 'Clarity', desc: 'Clear communication' },
+            { id: 'precision', label: 'Precision', desc: 'Exact language' },
+            { id: 'brevity', label: 'Brevity', desc: 'Short answers' }
+        ]
+    }, {
+        name: 'Deep Cuts',
+        items: [
+            { id: 'groundtruth', label: 'Ground Truth', desc: 'Fact vs inference' },
+            { id: 'citation', label: 'Citation', desc: 'Where is this from?' },
+            { id: 'transparency', label: 'Transparency', desc: 'Show the process' },
+            { id: 'limitations', label: 'Limitations', desc: 'What I cannot do' },
+            { id: 'fallback', label: 'Fallback', desc: 'Backup plan' },
+            { id: 'exit', label: 'Exit', desc: 'When to stop' },
+            { id: 'redflag', label: 'Red Flag', desc: 'Warn me' },
+            { id: 'unknown', label: 'Unknown', desc: 'I do not know' },
+            { id: 'paradox', label: 'Paradox', desc: 'Find contradictions' },
+            { id: 'cost', label: 'Cost', desc: 'Time, money, energy' }
+        ]
+    }, {
+        name: 'Elegant & Beautiful',
+        items: [
+            { id: 'elegance', label: 'Elegance', desc: 'Simple and correct' },
+            { id: 'proportionality', label: 'Proportionality', desc: 'Match effort to importance' },
+            { id: 'harmony', label: 'Harmony', desc: 'Balance priorities' },
+            { id: 'symmetry', label: 'Symmetry', desc: 'Balanced solutions' },
+            { id: 'clarity_alt', label: 'Clarity', desc: 'Make complex simple' }
+        ]
+    }];
+
+    // ================================================================
+    // 2. STATE
+    // ================================================================
+    let selected = new Set();
+
+    // ================================================================
+    // 3. RENDER
+    // ================================================================
+    function render() {
+        const grid = document.getElementById('modeGrid');
+        grid.innerHTML = '';
+
+        categories.forEach(cat => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="card-header">
+                    <h3>${cat.name}</h3>
+                    <span class="badge">${cat.items.length}</span>
+                </div>
+                <div class="tag-container">
+                    ${cat.items.map(item => `
+                        <span class="tag ${selected.has(item.id) ? 'active' : ''}" data-id="${item.id}">
+                            ${item.label}
+                            <span class="desc">${item.desc}</span>
+                        </span>
+                    `).join('')}
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+
+        // Add click listeners to tags
+        document.querySelectorAll('.tag').forEach(tag => {
+            tag.addEventListener('click', () => {
+                const id = tag.dataset.id;
+                if (selected.has(id)) {
+                    selected.delete(id);
+                } else {
+                    selected.add(id);
+                }
+                render();
+                updateConsole();
+            });
+        });
+
+        updateConsole();
+    }
+
+    // ================================================================
+    // 4. CONSOLE
+    // ================================================================
+    function updateConsole() {
+        const count = selected.size;
+        document.getElementById('selectedCount').textContent = `${count} mode${count !== 1 ? 's' : ''} selected`;
+
+        if (count === 0) {
+            document.getElementById('consoleOutput').textContent = 'Click modes above to build your prompt.';
+            return;
+        }
+
+        // Build the prompt
+        const labels = [];
+        categories.forEach(cat => {
+            cat.items.forEach(item => {
+                if (selected.has(item.id)) {
+                    labels.push(item.label);
+                }
+            });
+        });
+
+        const prompt = `${labels.join(', ')}. Here is my question: [INSERT YOUR QUESTION HERE]`;
+        document.getElementById('consoleOutput').textContent = prompt;
+    }
+
+    // ================================================================
+    // 5. ACTIONS
+    // ================================================================
+    document.getElementById('generateBtn').addEventListener('click', updateConsole);
+
+    document.getElementById('clearBtn').addEventListener('click', () => {
+        selected.clear();
+        render();
+        updateConsole();
+    });
+
+    document.getElementById('selectAllBtn').addEventListener('click', () => {
+        categories.forEach(cat => {
+            cat.items.forEach(item => {
+                selected.add(item.id);
+            });
+        });
+        render();
+        updateConsole();
+    });
+
+    document.getElementById('deselectAllBtn').addEventListener('click', () => {
+        selected.clear();
+        render();
+        updateConsole();
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', () => {
+        const output = document.getElementById('consoleOutput');
+        navigator.clipboard.writeText(output.textContent).then(() => {
+            const btn = document.getElementById('copyBtn');
+            btn.textContent = '✅ Copied!';
+            setTimeout(() => {
+                btn.textContent = '📋 Copy Prompt';
+            }, 2000);
+        }).catch(() => {
+            // Fallback
+            const range = document.createRange();
+            range.selectNode(output);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+            alert('Prompt copied to clipboard!');
+        });
+    });
+
+    document.getElementById('saveConfigBtn').addEventListener('click', () => {
+        const data = Array.from(selected);
+        localStorage.setItem('promptConsoleConfig', JSON.stringify(data));
+        alert('Configuration saved to local storage.');
+    });
+
+    document.getElementById('loadConfigBtn').addEventListener('click', () => {
+        const data = localStorage.getItem('promptConsoleConfig');
+        if (!data) {
+            alert('No saved configuration found.');
+            return;
+        }
+        try {
+            const arr = JSON.parse(data);
+            selected = new Set(arr);
+            render();
+            updateConsole();
+            alert('Configuration loaded!');
+        } catch (e) {
+            alert('Failed to load configuration.');
+        }
+    });
+
+    // ================================================================
+    // 6. BOOT
+    // ================================================================
+    // Try to load saved config
+    (function boot() {
+        const data = localStorage.getItem('promptConsoleConfig');
+        if (data) {
+            try {
+                const arr = JSON.parse(data);
+                selected = new Set(arr);
+            } catch (e) {
+                // ignore
+            }
+        }
+        render();
+        updateConsole();
+    })();
+
+    console.log('⚡ Prompt Engineering Console loaded.');
+</script>
+</body>
+</html>

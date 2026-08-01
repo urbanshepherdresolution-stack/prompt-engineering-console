@@ -1,0 +1,34 @@
+
+## 🔧 Advanced Features
+
+- **Save Configuration** - Store your selection in browser localStorage
+- **Load Configuration** - Restore previously saved selections
+- **Select All** - Add all modes at once
+- **Clear All** - Start fresh
+
+## 🎯 Why This Tool?
+
+This console helps you:
+- Structure better prompts
+- Apply reasoning frameworks systematically
+- Combine complementary thinking modes
+- Save and reuse effective prompt configurations
+
+## 🛠️ Technologies
+
+- Pure HTML/CSS/JavaScript
+- No dependencies
+- Works offline
+- Responsive design
+
+## 📄 License
+
+MIT License - Feel free to use and modify
+
+## 🤝 Contributing
+
+Contributions welcome! Feel free to submit issues or pull requests.
+
+---
+
+**Built for prompt engineers, by prompt engineers.**
